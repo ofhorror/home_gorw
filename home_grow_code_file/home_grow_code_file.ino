@@ -1,11 +1,12 @@
 #include <DHT.h>
 
-#define DHTPIN 2          // DHT11 센서가 연결된 핀
-#define DHTTYPE DHT11     // DHT11을 사용
-DHT dht(DHTPIN, DHTTYPE);
+#define DHTPIN 2      // DHT11 센서가 연결된 핀
+#define DHTTYPE DHT11 // DHT11 센서 유형
 
-int relayFanPin = 9;      // 환풍기를 제어할 릴레이 핀
-int relayPumpPin = 10;    // 펌프를 제어할 릴레이 핀
+DHT dht(DHTPIN, DHTTYPE);  // DHT 객체 선언
+
+int relayFanPin = 9;       // 환풍기를 제어할 릴레이 핀
+int relayPumpPin = 10;     // 펌프를 제어할 릴레이 핀
 
 float setTemperature = 23.0;  // 초기 설정 온도
 float setHumidity = 50.0;     // 초기 설정 습도
