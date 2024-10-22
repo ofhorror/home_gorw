@@ -56,11 +56,11 @@ void loop() {
       // 수동 모드에서 펌프 ON/OFF
       if (input == "pump on") {
         pumpState = true;
-        digitalWrite(relayPumpPin, LOW);  // 펌프 ON
+        digitalWrite(relayPumpPin, HIGH);  // 펌프 ON
         Serial.println("펌프 작동 중...");
       } else if (input == "pump off") {
         pumpState = false;
-        digitalWrite(relayPumpPin, HIGH); // 펌프 OFF
+        digitalWrite(relayPumpPin, LOW); // 펌프 OFF
         Serial.println("펌프 정지.");
       }
     }
@@ -88,10 +88,10 @@ void loop() {
 
     // 습도가 설정한 값보다 낮으면 펌프 ON, 높으면 OFF
     if (humidity < setHumidity) {
-      digitalWrite(relayPumpPin, LOW);   // 릴레이 ON (펌프 작동)
+      digitalWrite(relayPumpPin, HIGH);   // 릴레이 ON (펌프 작동)
       Serial.println("펌프 작동 중...");
     } else {
-      digitalWrite(relayPumpPin, HIGH);  // 릴레이 OFF (펌프 정지)
+      digitalWrite(relayPumpPin, LOW);  // 릴레이 OFF (펌프 정지)
       Serial.println("펌프 정지.");
     }
 
