@@ -59,22 +59,37 @@ void loop() {
       // 수동 모드에서 펌프 ON/OFF
       if (input == "pump on") {
         pumpState = true;
-        digitalWrite(relayPumpPin, HIGH);  // 펌프 ON
+        digitalWrite(relayPumpPin, LOW);  // 펌프 ON
         Serial.println("펌프 작동 중...");
       } else if (input == "pump off") {
         pumpState = false;
-        digitalWrite(relayPumpPin, LOW); // 펌프 OFF
+        digitalWrite(relayPumpPin, HIGH); // 펌프 OFF
         Serial.println("펌프 정지.");
+      }
+
+      // 'led button' 명령을 받으면 LED 릴레이를 0.5초간 닫고 다시 열기
+      if (input == "led button") {
+        digitalWrite(LEDrelayPin, LOW);  // 릴레이 닫힘
+        Serial.println("Relay is closed for 0.5 seconds.");
+        delay(500);  // 0.5초 대기 (릴레이 닫힌 상태 유지)
+        digitalWrite(LEDrelayPin, HIGH);  // 릴레이 다시 열림
+        Serial.println("Relay is open again.");
       }
     }
 
-    // 'led button' 명령을 받으면 LED 릴레이를 0.5초간 닫고 다시 열기
-    if (input == "led button") {
-      digitalWrite(LEDrelayPin, LOW);  // 릴레이 닫힘
-      Serial.println("Relay is closed for 0.5 seconds.");
-      delay(500);  // 0.5초 대기 (릴레이 닫힌 상태 유지)
-      digitalWrite(LEDrelayPin, HIGH);  // 릴레이 다시 열림
-      Serial.println("Relay is open again.");
+    // 설정 온도 및 습도 변경 명령
+    if (input.startsWith("t")) {
+      setTemperature = input.substring(1).toFloat();  // "t" 이후 값 읽기
+      Serial.print("설정 온도가 ");
+      Serial.print(setTemperature);
+      Serial.println("°C로 변경되었습니다.");
+    }
+
+    if (input.startsWith("h")) {
+      setHumidity = input.substring(1).toFloat();  // "h" 이후 값 읽기
+      Serial.print("설정 습도가 ");
+      Serial.print(setHumidity);
+      Serial.println("%로 변경되었습니다.");
     }
   }
 
@@ -90,12 +105,17 @@ void loop() {
       return;
     }
 
-    // 시리얼 모니터에 온도와 습도 출력
-    Serial.print("습도: ");
+    // 센서와 설정값을 시리얼 모니터에 출력
+    Serial.print("현재 습도: ");
     Serial.print(humidity);
-    Serial.print("%  ");
-    Serial.print("온도: ");
+    Serial.print("% | 설정 습도: ");
+    Serial.print(setHumidity);
+    Serial.println("%");
+
+    Serial.print("현재 온도: ");
     Serial.print(temperature);
+    Serial.print("°C | 설정 온도: ");
+    Serial.print(setTemperature);
     Serial.println("°C");
 
     // 습도가 설정한 값보다 낮으면 펌프 ON, 높으면 OFF
