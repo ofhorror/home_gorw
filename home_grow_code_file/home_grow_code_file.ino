@@ -7,6 +7,7 @@ DHT dht(DHTPIN, DHTTYPE);  // DHT 객체 선언
 
 int relayFanPin = 9;       // 환풍기를 제어할 릴레이 핀
 int relayPumpPin = 10;     // 펌프를 제어할 릴레이 핀
+int LEDrelayPin = 11;      // LED 릴레이 핀
 
 bool manualMode = false;   // 수동 모드 플래그 (false는 자동 모드, true는 수동 모드)
 bool fanState = false;     // 환풍기 상태 저장 (true: ON, false: OFF)
@@ -21,10 +22,12 @@ void setup() {
 
   pinMode(relayFanPin, OUTPUT);
   pinMode(relayPumpPin, OUTPUT);
+  pinMode(LEDrelayPin, OUTPUT);
 
   // 릴레이는 LOW에서 작동하기 때문에 초기 상태는 OFF로 설정
   digitalWrite(relayFanPin, HIGH);
   digitalWrite(relayPumpPin, HIGH);
+  digitalWrite(LEDrelayPin, HIGH);  // LED 릴레이 초기 OFF
 }
 
 void loop() {
@@ -63,6 +66,15 @@ void loop() {
         digitalWrite(relayPumpPin, LOW); // 펌프 OFF
         Serial.println("펌프 정지.");
       }
+    }
+
+    // 'led button' 명령을 받으면 LED 릴레이를 0.5초간 닫고 다시 열기
+    if (input == "led button") {
+      digitalWrite(LEDrelayPin, LOW);  // 릴레이 닫힘
+      Serial.println("Relay is closed for 0.5 seconds.");
+      delay(500);  // 0.5초 대기 (릴레이 닫힌 상태 유지)
+      digitalWrite(LEDrelayPin, HIGH);  // 릴레이 다시 열림
+      Serial.println("Relay is open again.");
     }
   }
 
@@ -108,6 +120,10 @@ void loop() {
   // 릴레이 핀 상태를 시리얼로 출력하여 확인
   Serial.print("relayFanPin 상태: ");
   Serial.println(digitalRead(relayFanPin));
+  Serial.print("relayPumpPin 상태: ");
+  Serial.println(digitalRead(relayPumpPin));
+  Serial.print("LEDrelayPin 상태: ");
+  Serial.println(digitalRead(LEDrelayPin));
 
   // 2초마다 센서 값 업데이트
   delay(2000);
